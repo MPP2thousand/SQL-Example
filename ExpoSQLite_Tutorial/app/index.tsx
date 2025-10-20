@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   Button,
   FlatList,
-  StyleSheet,
   Text,
   TextInput,
   View,
@@ -11,6 +10,8 @@ import {
 } from "react-native";
 import { fetchItems, insertItem, deleteItem, updateItem, type Item } from "../data/db";
 import ItemRow from "./components/ItemRow";
+import defaultStyles from "@/styles/defaultStyles";
+import MyDropdown from "./components/Dropdown";
 
 export default function App() {
   /**
@@ -213,11 +214,13 @@ export default function App() {
     ]);
   };
 
+  const sortList = {};
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>SQLite Example</Text>
+    <View style={defaultStyles.container}>
+      <Text style={defaultStyles.title}>SQLite Example</Text>
       <TextInput
-        style={styles.input}
+        style={defaultStyles.input}
         placeholder="Item Name"
         value={name}
         onChangeText={setName}
@@ -230,7 +233,7 @@ export default function App() {
         Note: This doesn't prevent non-numeric input, so we still validate in saveItem().
       */}
       <TextInput
-        style={styles.input}
+        style={defaultStyles.input}
         placeholder="Quantity"
         value={quantity}
         onChangeText={setQuantity}
@@ -246,7 +249,7 @@ export default function App() {
         onPress={saveOrUpdate}
       />
       <FlatList
-        style={styles.list}
+        style={defaultStyles.list}
         data={items}
         keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => (
@@ -278,39 +281,11 @@ export default function App() {
             : undefined
         }
       />
+      <MyDropdown selectedValue={0} setSelectedValue={function (arg: number): void {
+        throw new Error("Function not implemented.");
+      } }/>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginBottom: 10,
-  },
-  list: {
-    marginTop: 20,
-    width: "100%",
-  },
-  item: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-});
+

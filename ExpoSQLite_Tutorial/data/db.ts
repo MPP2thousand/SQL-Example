@@ -78,9 +78,36 @@ export const insertItem = async (
  * @param db - The SQLite database instance
  * @returns Promise that resolves to an array of Item objects
  */
-export const fetchItems = async (db: SQLiteDatabase): Promise<Item[]> => {
-  return db.getAllAsync<Item>("SELECT * FROM items;");
+export type SortOption = 'A-Z' | 'Z-A' | 'Lowest Qty' | 'Highest Qty';
+
+export const fetchItems = async (
+  db: SQLiteDatabase,
+  sortBy?: SortOption
+): Promise<Item[]> => {
+  let orderByClause = "";
+
+  switch (sortBy) {
+    case "A-Z":
+      orderByClause = "ORDER BY name ASC";
+      break;
+    case "Z-A":
+      orderByClause = "ORDER BY name DESC";
+      break;
+    case "Lowest Qty":
+      orderByClause = "ORDER BY quantity ASC";
+      break;
+    case "Highest Qty":
+      orderByClause = "ORDER BY quantity DESC";
+      break;
+    default:
+      orderByClause = ""; // no sorting
+  }
+
+  const query = `SELECT * FROM items ${orderByClause};`;
+
+  return db.getAllAsync<Item>(query);
 };
+
 
 /**
  * Update Item

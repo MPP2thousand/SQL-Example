@@ -1,17 +1,17 @@
+import defaultStyles from "@/styles/defaultStyles";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import {
+  Alert,
   Button,
   FlatList,
   Text,
   TextInput,
   View,
-  Alert,
 } from "react-native";
-import { fetchItems, insertItem, deleteItem, updateItem, type Item } from "../data/db";
-import ItemRow from "./components/ItemRow";
-import defaultStyles from "@/styles/defaultStyles";
+import { deleteItem, fetchItems, insertItem, SortOption, updateItem, type Item } from "../data/db";
 import MyDropdown from "./components/Dropdown";
+import ItemRow from "./components/ItemRow";
 
 export default function App() {
   /**
@@ -23,6 +23,10 @@ export default function App() {
    */
   const db = useSQLiteContext();
 
+
+
+
+
   /**
    * Form State
    *
@@ -32,6 +36,7 @@ export default function App() {
   const [name, setName] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
   const [editingId, setEditingId] = useState<number | null>(null);
+  
 
   /**
    * Database State
@@ -68,14 +73,15 @@ export default function App() {
    *
    * @returns Promise that resolves when items are successfully loaded
    */
-  const loadItems = async () => {
-    try {
-      const value = await fetchItems(db);
-      setItems(value);
-    } catch (err) {
-      console.log("Failed to fetch items", err);
-    }
-  };
+  const loadItems = async (sortBy?: SortOption) => {
+  try {
+    const value = await fetchItems(db, sortBy);
+    setItems(value);
+  } catch (err) {
+    console.log("Failed to fetch items", err);
+  }
+};
+
 
   /**
    * Save Item Function
@@ -281,9 +287,7 @@ export default function App() {
             : undefined
         }
       />
-      <MyDropdown selectedValue={0} setSelectedValue={function (arg: number): void {
-        throw new Error("Function not implemented.");
-      } }/>
+      <MyDropdown/>
     </View>
   );
 }
